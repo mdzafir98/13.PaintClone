@@ -1,0 +1,1 @@
+g++ -o a.out src/main.cpp src/Game.cpp src/ColorSquare.cpp src/InputBox.cpp -fpermissive -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
