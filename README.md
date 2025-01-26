@@ -1,5 +1,10 @@
 Simple PAINT application made using RAYLIB C++ library
 
+Right-click on color pallete to select color
+Left-click to paint on canvas
+Press E to use eraser tool
+Mouse-scroll to adjust brush/eraser size
+
 ![PAINT_CLONE](https://github.com/user-attachments/assets/c900e7f9-2670-4991-8daa-1dc1dd997426)
 
 VIDEO SAMPLE:
