@@ -11,18 +11,29 @@ Game::~Game()
 
 void Game::init()
 {
+    initDrawingPad();
     initColorPallete();
     initInputBox();
+}
+
+void Game::initDrawingPad()
+{
+    DrawRectangle(0,0,GetScreenWidth(),GetScreenHeight(),RAYWHITE);
+    DrawText("RIGHT-CLICK to select COLOR",0,0,20,LIGHTGRAY);
+    DrawText("LEFT-CLICK to PAINT",0,25,20,LIGHTGRAY);
+    DrawText("KEY_E to ERASE",0,50,20,LIGHTGRAY);
+    DrawText("MOUSE-SCROLL to +/- BRUSHSIZE",0,75,20,LIGHTGRAY);
 }
 
 void Game::draw()
 {
     DrawRectangle(0,GetScreenHeight()-100,GetScreenWidth(),100,{29,27,27,255});
+    drawFunction();
     drawColorPallete();
     drawRGBInputBox();
     drawUI();
-    drawBrushCursor();
-    drawColorValue();
+    // drawBrushCursor();
+    // drawColorValue();
 }
 
 void Game::update()
@@ -36,9 +47,10 @@ void Game::handleInput()
     //select color from using pallete
     for (auto& unit:colorUnits){
         if (CheckCollisionPointRec(mousePos,unit->getRect())){
-            if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+            if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
                 unit->stateColor();
                 brushColor=unit->getColor();
+                unit->selected=true;
             }
         }
     }
@@ -83,35 +95,12 @@ void Game::handleInput()
         getInputColor();
         brushColor = inputColor;
     }
-
-
-    // if (mouseOnText){
-    //     SetMouseCursor(MOUSE_CURSOR_IBEAM);
-    //     int key=GetCharPressed();
-    //     while(key>0){
-    //         if ((key>=48) && (key<=57)){
-    //             rInput[count]=(char)key;
-    //             rInput[count+1]='\0';
-    //             count++;
-    //         }
-    //         key=GetCharPressed();
-    //     }
-    //     if(IsKeyPressed(KEY_BACKSPACE)){
-    //         count--;
-    //         if(count<0){
-    //             count=0;
-    //         }
-    //         rInput[count]='\0';
-    //     }
-    // } else{
-    //     SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-    // }
 }
 
 void Game::drawUI()
 {
-    DrawText(TextFormat("BRUSH SIZE: %i  | ",brushSize),0,(float)GetScreenHeight()-25,20,RAYWHITE);
-    DrawText("COLOR: ",200,(float)GetScreenHeight()-25,20,RAYWHITE);
+    DrawText(TextFormat("BRUSH SIZE: %i  |  COLOR: ",brushSize),0,(float)GetScreenHeight()-25,20,RAYWHITE);
+    // DrawText("COLOR: ",200,(float)GetScreenHeight()-25,20,RAYWHITE);
     DrawRectangle(280,(float)GetScreenHeight()-25,50,20,brushColor);
 }
 
@@ -140,7 +129,7 @@ void Game::drawRGBInputBox()
     for (auto& box:inputBoxVector){
         box->draw();
     }
-    //rgb textbox
+    //rgb text
     DrawText("R:", 420, GetScreenHeight()-100, 20, RED);
     DrawText("G:", 420, GetScreenHeight()-70, 20, GREEN);
     DrawText("B:", 420, GetScreenHeight()-40, 20, BLUE);
@@ -164,6 +153,7 @@ void Game::getInputColor()
     unsigned char g_uint = reinterpret_cast<unsigned char>(g_inputBox->input);
     unsigned char b_uint = reinterpret_cast<unsigned char>(b_inputBox->input);
     inputColor = {r_uint,g_uint,b_uint,255};
+    std::cout << r_uint << " " << g_uint << " " << b_uint << "\n";
 }
 
 void Game::drawColorValue()
@@ -171,6 +161,25 @@ void Game::drawColorValue()
     for (auto& unit:colorUnits){
         if ((CheckCollisionPointRec(mousePos,unit->getRect()))){
             unit->showColorDetails();
+        }
+    }
+}
+
+void Game::drawFunction()
+{
+    //check if mouse within drawing pad
+    if(mousePos.x>=0 && mousePos.x<=GetScreenWidth() && mousePos.y>=0 && mousePos.y<=GetScreenHeight()-100){
+        withinDrawingPad=true;
+    }else{
+        withinDrawingPad=false;
+    }
+
+    //drawing function
+    if(withinDrawingPad==true){
+        if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) || GetGestureDetected() == GESTURE_DRAG){
+            brushPos=mousePos;
+            DrawCircle(brushPos.x,brushPos.y,brushSize,brushColor);
+            std::cout << "X: " << brushPos.x << " " << "Y: " << brushPos.y << "\n";
         }
     }
 }

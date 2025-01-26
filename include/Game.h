@@ -15,12 +15,14 @@ public:
     void handleInput();
     void drawUI();
     void initColorPallete();
+    void initDrawingPad();
     void drawColorPallete();
     void drawRGBInputBox();
     void drawBrushCursor();
     void initInputBox();
     void getInputColor();
     void drawColorValue();
+    void drawFunction();
 private:
     std::vector<Color> colors{RAYWHITE, YELLOW, GOLD, ORANGE, PINK, RED, MAROON, GREEN, LIME, DARKGREEN,
         SKYBLUE, BLUE, DARKBLUE, PURPLE, VIOLET, DARKPURPLE, BEIGE, BROWN, DARKBROWN,
@@ -31,6 +33,7 @@ private:
     int brushSize{10};
     Color brushColor{0,0,0};
     Color inputColor{0,0,0};
+    Vector2 brushPos;
 
     //RGB inputbox
     InputBox* r_inputBox = new InputBox({450,412},DARKGRAY,4,60,25);
@@ -40,8 +43,10 @@ private:
 
     //rgb input textbox
     bool mouseOnText{false};
-    
     char rInput[4]="\0";
     char gInput[4]="\0";
     char bInput[4]="\0";
+    
+    bool withinDrawingPad{false};
+    RenderTexture2D drawingPad=LoadRenderTexture(512,412);
 };

@@ -14,7 +14,7 @@ int main(){
 
         //3. game draw loop
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+            // ClearBackground(RAYWHITE);
             game.draw();
         EndDrawing();
     }
